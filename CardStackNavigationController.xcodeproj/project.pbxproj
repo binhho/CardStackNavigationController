@@ -1,0 +1,285 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D93235D17D977F400D07BDD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93235C17D977F400D07BDD /* UIKit.framework */; };
+		1D93235F17D977F400D07BDD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93235E17D977F400D07BDD /* Foundation.framework */; };
+		1D93236117D977F400D07BDD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93236017D977F400D07BDD /* CoreGraphics.framework */; };
+		1D93236717D977F400D07BDD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1D93236517D977F400D07BDD /* InfoPlist.strings */; };
+		1D93236917D977F400D07BDD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D93236817D977F400D07BDD /* main.m */; };
+		1D93236D17D977F400D07BDD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D93236C17D977F400D07BDD /* AppDelegate.m */; };
+		1D93236F17D977F400D07BDD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D93236E17D977F400D07BDD /* Default.png */; };
+		1D93237117D977F400D07BDD /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D93237017D977F400D07BDD /* Default@2x.png */; };
+		1D93237317D977F400D07BDD /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D93237217D977F400D07BDD /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D93235917D977F400D07BDD /* CardStackNavigationController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardStackNavigationController.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D93235C17D977F400D07BDD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1D93235E17D977F400D07BDD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1D93236017D977F400D07BDD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1D93236417D977F400D07BDD /* CardStackNavigationController-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CardStackNavigationController-Info.plist"; sourceTree = "<group>"; };
+		1D93236617D977F400D07BDD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1D93236817D977F400D07BDD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1D93236A17D977F400D07BDD /* CardStackNavigationController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CardStackNavigationController-Prefix.pch"; sourceTree = "<group>"; };
+		1D93236B17D977F400D07BDD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1D93236C17D977F400D07BDD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1D93236E17D977F400D07BDD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		1D93237017D977F400D07BDD /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		1D93237217D977F400D07BDD /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D93235617D977F400D07BDD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D93235D17D977F400D07BDD /* UIKit.framework in Frameworks */,
+				1D93235F17D977F400D07BDD /* Foundation.framework in Frameworks */,
+				1D93236117D977F400D07BDD /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D93235017D977F400D07BDD = {
+			isa = PBXGroup;
+			children = (
+				1D93236217D977F400D07BDD /* CardStackNavigationController */,
+				1D93235B17D977F400D07BDD /* Frameworks */,
+				1D93235A17D977F400D07BDD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1D93235A17D977F400D07BDD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D93235917D977F400D07BDD /* CardStackNavigationController.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D93235B17D977F400D07BDD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1D93235C17D977F400D07BDD /* UIKit.framework */,
+				1D93235E17D977F400D07BDD /* Foundation.framework */,
+				1D93236017D977F400D07BDD /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1D93236217D977F400D07BDD /* CardStackNavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				1D93236B17D977F400D07BDD /* AppDelegate.h */,
+				1D93236C17D977F400D07BDD /* AppDelegate.m */,
+				1D93236317D977F400D07BDD /* Supporting Files */,
+			);
+			path = CardStackNavigationController;
+			sourceTree = "<group>";
+		};
+		1D93236317D977F400D07BDD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1D93236417D977F400D07BDD /* CardStackNavigationController-Info.plist */,
+				1D93236517D977F400D07BDD /* InfoPlist.strings */,
+				1D93236817D977F400D07BDD /* main.m */,
+				1D93236A17D977F400D07BDD /* CardStackNavigationController-Prefix.pch */,
+				1D93236E17D977F400D07BDD /* Default.png */,
+				1D93237017D977F400D07BDD /* Default@2x.png */,
+				1D93237217D977F400D07BDD /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D93235817D977F400D07BDD /* CardStackNavigationController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D93237617D977F400D07BDD /* Build configuration list for PBXNativeTarget "CardStackNavigationController" */;
+			buildPhases = (
+				1D93235517D977F400D07BDD /* Sources */,
+				1D93235617D977F400D07BDD /* Frameworks */,
+				1D93235717D977F400D07BDD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CardStackNavigationController;
+			productName = CardStackNavigationController;
+			productReference = 1D93235917D977F400D07BDD /* CardStackNavigationController.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1D93235117D977F400D07BDD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "William Chang";
+			};
+			buildConfigurationList = 1D93235417D977F400D07BDD /* Build configuration list for PBXProject "CardStackNavigationController" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1D93235017D977F400D07BDD;
+			productRefGroup = 1D93235A17D977F400D07BDD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D93235817D977F400D07BDD /* CardStackNavigationController */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D93235717D977F400D07BDD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D93236717D977F400D07BDD /* InfoPlist.strings in Resources */,
+				1D93236F17D977F400D07BDD /* Default.png in Resources */,
+				1D93237117D977F400D07BDD /* Default@2x.png in Resources */,
+				1D93237317D977F400D07BDD /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D93235517D977F400D07BDD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D93236917D977F400D07BDD /* main.m in Sources */,
+				1D93236D17D977F400D07BDD /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1D93236517D977F400D07BDD /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1D93236617D977F400D07BDD /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1D93237417D977F400D07BDD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		1D93237517D977F400D07BDD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1D93237717D977F400D07BDD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CardStackNavigationController/CardStackNavigationController-Prefix.pch";
+				INFOPLIST_FILE = "CardStackNavigationController/CardStackNavigationController-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1D93237817D977F400D07BDD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CardStackNavigationController/CardStackNavigationController-Prefix.pch";
+				INFOPLIST_FILE = "CardStackNavigationController/CardStackNavigationController-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D93235417D977F400D07BDD /* Build configuration list for PBXProject "CardStackNavigationController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D93237417D977F400D07BDD /* Debug */,
+				1D93237517D977F400D07BDD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D93237617D977F400D07BDD /* Build configuration list for PBXNativeTarget "CardStackNavigationController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D93237717D977F400D07BDD /* Debug */,
+				1D93237817D977F400D07BDD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1D93235117D977F400D07BDD /* Project object */;
+}
