@@ -8,6 +8,9 @@
 
 #import "CardStackNavigationController.h"
 
+#define DURATION_PUSH 0.4
+#define DURATION_POP 0.3
+
 @interface CardStackNavigationController ()
 
 @end
@@ -76,7 +79,7 @@
 		
 		// Animate
 		foregroundFrame.origin = CGPointZero;
-		[UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+		[UIView animateWithDuration:DURATION_PUSH delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
 			viewController.view.frame = foregroundFrame;
 			backgroundViewController.view.frame = backgroundFrame;
 		} completion:^(BOOL finished) {
@@ -94,25 +97,15 @@
 	}
 }
 
-- (void)popViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
-	if ([_viewControllers count] > 1) {
-		[self popToViewController:[_viewControllers objectAtIndex:[_viewControllers count] - 2] animated:animated completion:completion];
-	}
-}
-
-- (void)popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
-	if ([_viewControllers count] > 1) {
-		[self popToViewController:[_viewControllers objectAtIndex:0] animated:animated completion:completion];
-	}
-}
-
 - (void)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)())completion {
 	if (viewController == self.topViewController) {
 		return;
 	}
 	
+	// Retain top view controller so we still have a valid reference to it
 	UIViewController *foregroundViewController = [self.topViewController retain];
 	
+	// Pop all view controllers until we reach the desired one
 	NSArray *viewControllersCopy = [[NSArray alloc] initWithArray:_viewControllers];
 	for (int i = [viewControllersCopy count] - 1; i >= 0; i--) {
 		UIViewController *vc = [viewControllersCopy objectAtIndex:i];
@@ -125,9 +118,9 @@
 	[viewControllersCopy release];
 	
 	// Remove from parent
-	[self.topViewController willMoveToParentViewController:nil];
-	[self.topViewController removeFromParentViewController];
-	[self.topViewController didMoveToParentViewController:nil];
+	[foregroundViewController willMoveToParentViewController:nil];
+	[foregroundViewController removeFromParentViewController];
+	[foregroundViewController didMoveToParentViewController:nil];
 	
 	void (^popCompletionBlock)() = ^() {
 		[foregroundViewController.view removeFromSuperview];
@@ -151,7 +144,7 @@
 		viewController.view.frame = backgroundFrame;
 		backgroundFrame.origin.x = 0.0;
 		
-		[UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+		[UIView animateWithDuration:DURATION_POP delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
 			foregroundViewController.view.frame = foregroundFrame;
 			viewController.view.frame = backgroundFrame;
 		} completion:^(BOOL finished) {
@@ -162,9 +155,24 @@
 	}
 }
 
+- (void)popViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
+	NSInteger count = [_viewControllers count];
+	if (count > 1) {
+		UIViewController *secondLastViewController = [_viewControllers objectAtIndex:count - 2];
+		[self popToViewController:secondLastViewController animated:animated completion:completion];
+	}
+}
+
+- (void)popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
+	if ([_viewControllers count] > 1) {
+		[self popToViewController:[_viewControllers objectAtIndex:0] animated:animated completion:completion];
+	}
+}
+
 @end
 
 @implementation UIViewController(CardStackNavigation)
+@dynamic cardStackNavigationController;
 
 - (CardStackNavigationController *)cardStackNavigationController {
 	if ([self.parentViewController isKindOfClass:[CardStackNavigationController class]]) {

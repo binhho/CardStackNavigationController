@@ -26,6 +26,6 @@
 
 @interface UIViewController(CardStackNavigation)
 
-- (CardStackNavigationController *)cardStackNavigationController;
+@property (nonatomic, readonly) CardStackNavigationController *cardStackNavigationController;
 
 @end
