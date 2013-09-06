@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D195EAA17D9787E00F8D0DA /* CardStackNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D195EA917D9787E00F8D0DA /* CardStackNavigationController.m */; };
+		1D195EAE17D9797900F8D0DA /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D195EAC17D9797900F8D0DA /* TestViewController.m */; };
+		1D195EAF17D9797900F8D0DA /* TestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D195EAD17D9797900F8D0DA /* TestViewController.xib */; };
 		1D93235D17D977F400D07BDD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93235C17D977F400D07BDD /* UIKit.framework */; };
 		1D93235F17D977F400D07BDD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93235E17D977F400D07BDD /* Foundation.framework */; };
 		1D93236117D977F400D07BDD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D93236017D977F400D07BDD /* CoreGraphics.framework */; };
@@ -19,6 +22,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D195EA817D9787E00F8D0DA /* CardStackNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardStackNavigationController.h; sourceTree = "<group>"; };
+		1D195EA917D9787E00F8D0DA /* CardStackNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardStackNavigationController.m; sourceTree = "<group>"; };
+		1D195EAB17D9797900F8D0DA /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		1D195EAC17D9797900F8D0DA /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		1D195EAD17D9797900F8D0DA /* TestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestViewController.xib; sourceTree = "<group>"; };
 		1D93235917D977F400D07BDD /* CardStackNavigationController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardStackNavigationController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D93235C17D977F400D07BDD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1D93235E17D977F400D07BDD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -48,6 +56,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D195EA517D9786F00F8D0DA /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				1D195EA617D9786F00F8D0DA /* View Controllers */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		1D195EA617D9786F00F8D0DA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1D195EA717D9786F00F8D0DA /* Card Stack */,
+				1D195EAB17D9797900F8D0DA /* TestViewController.h */,
+				1D195EAC17D9797900F8D0DA /* TestViewController.m */,
+				1D195EAD17D9797900F8D0DA /* TestViewController.xib */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		1D195EA717D9786F00F8D0DA /* Card Stack */ = {
+			isa = PBXGroup;
+			children = (
+				1D195EA817D9787E00F8D0DA /* CardStackNavigationController.h */,
+				1D195EA917D9787E00F8D0DA /* CardStackNavigationController.m */,
+			);
+			path = "Card Stack";
+			sourceTree = "<group>";
+		};
 		1D93235017D977F400D07BDD = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +116,7 @@
 			children = (
 				1D93236B17D977F400D07BDD /* AppDelegate.h */,
 				1D93236C17D977F400D07BDD /* AppDelegate.m */,
+				1D195EA517D9786F00F8D0DA /* Classes */,
 				1D93236317D977F400D07BDD /* Supporting Files */,
 			);
 			path = CardStackNavigationController;
@@ -154,6 +191,7 @@
 				1D93236F17D977F400D07BDD /* Default.png in Resources */,
 				1D93237117D977F400D07BDD /* Default@2x.png in Resources */,
 				1D93237317D977F400D07BDD /* Default-568h@2x.png in Resources */,
+				1D195EAF17D9797900F8D0DA /* TestViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +204,8 @@
 			files = (
 				1D93236917D977F400D07BDD /* main.m in Sources */,
 				1D93236D17D977F400D07BDD /* AppDelegate.m in Sources */,
+				1D195EAA17D9787E00F8D0DA /* CardStackNavigationController.m in Sources */,
+				1D195EAE17D9797900F8D0DA /* TestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +318,7 @@
 				1D93237817D977F400D07BDD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "CardStackNavigationController.h"
+#import "TestViewController.h"
 
 @implementation AppDelegate
 
@@ -21,6 +23,13 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+	
+	TestViewController *testViewController = [[TestViewController alloc] init];
+	CardStackNavigationController *navCon = [[CardStackNavigationController alloc] initWithRootViewController:testViewController];
+	self.window.rootViewController = navCon;
+	[navCon release];
+	[testViewController release];
+	
     [self.window makeKeyAndVisible];
     return YES;
 }
