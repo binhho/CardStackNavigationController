@@ -54,14 +54,18 @@
 	// Remove previous top view controller as current
 	UIViewController *backgroundViewController = self.topViewController;
 	[backgroundViewController willMoveToParentViewController:nil];
-	[backgroundViewController removeFromParentViewController];
-	[backgroundViewController didMoveToParentViewController:nil];
 	
 	// Add to view controllers array
 	[_viewControllers addObject:viewController];
 	
 	// Add as a child
 	[self addChildViewController:viewController];
+	
+	void (^cleanUpBackgroundViewController)() = ^(){
+		[backgroundViewController.view removeFromSuperview];
+		[backgroundViewController removeFromParentViewController];
+		[backgroundViewController didMoveToParentViewController:nil];
+	};
 	
 	if (animated) {
 		// Adjust frame to be out of view
@@ -83,6 +87,8 @@
 			viewController.view.frame = foregroundFrame;
 			backgroundViewController.view.frame = backgroundFrame;
 		} completion:^(BOOL finished) {
+			cleanUpBackgroundViewController();
+			
 			if (completion) {
 				completion();
 			}
@@ -94,6 +100,8 @@
 		// Add subview
 		[self.view addSubview:viewController.view];
 		[viewController didMoveToParentViewController:self];
+		
+		cleanUpBackgroundViewController();
 	}
 }
 
@@ -119,11 +127,11 @@
 	
 	// Remove from parent
 	[foregroundViewController willMoveToParentViewController:nil];
-	[foregroundViewController removeFromParentViewController];
-	[foregroundViewController didMoveToParentViewController:nil];
 	
-	void (^popCompletionBlock)() = ^() {
+	void (^cleanUpForegroundViewController)() = ^() {
 		[foregroundViewController.view removeFromSuperview];
+		[foregroundViewController removeFromParentViewController];
+		[foregroundViewController didMoveToParentViewController:nil];
 		
 		[self addChildViewController:viewController];
 		[viewController didMoveToParentViewController:self];
@@ -134,6 +142,9 @@
 			completion();
 		}
 	};
+	
+	// Add the background view controller's view back
+	[self.view insertSubview:viewController.view belowSubview:foregroundViewController.view];
 	
 	if (animated) {
 		CGRect foregroundFrame = foregroundViewController.view.frame;
@@ -148,10 +159,10 @@
 			foregroundViewController.view.frame = foregroundFrame;
 			viewController.view.frame = backgroundFrame;
 		} completion:^(BOOL finished) {
-			popCompletionBlock();
+			cleanUpForegroundViewController();
 		}];
 	} else {
-		popCompletionBlock();
+		cleanUpForegroundViewController();
 	}
 }
 
