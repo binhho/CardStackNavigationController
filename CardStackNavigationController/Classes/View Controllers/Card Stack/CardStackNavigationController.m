@@ -42,66 +42,75 @@
 	}
 }
 
-#pragma mark - Top View Controller
+#pragma mark - Getters/Setters
 
 - (UIViewController *)topViewController {
 	return [_viewControllers lastObject];
 }
 
+- (void)setViewControllers:(NSArray *)viewControllers {
+	[self setViewControllers:viewControllers animated:NO completion:nil];
+}
+
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated completion:(void (^)())completion {
+	UIViewController *topViewController = [self.topViewController retain];
+	UIViewController *newTopViewController = [viewControllers lastObject];
+	
+	void (^setViewControllersCompletionBlock)() = ^(){
+		[self handlePostAnimationLifecycleTransitioningFromViewController:topViewController toViewController:newTopViewController];
+		
+		[_viewControllers release];
+		_viewControllers = [[NSMutableArray alloc] initWithArray:viewControllers];
+		
+		[topViewController release];
+		
+		if (completion) {
+			completion();
+		}
+	};
+	
+	[self handlePreAnimationLifecycleTransitioningFromViewController:topViewController toViewController:newTopViewController];
+	
+	if (animated) {
+		// If the new top view controller is in the current array, then transition as if we're popping
+		if ([_viewControllers indexOfObject:newTopViewController] != NSNotFound) {
+			// "Popping" from topViewController to newTopViewController
+			[self animatePoppingTransitionFromViewController:topViewController toViewController:newTopViewController completion:setViewControllersCompletionBlock];
+		} else {
+			// If the new top view controler is NOT in the current array, then transition as if we're pushing
+			[self animatedPushingTransitionFromViewController:topViewController toViewController:newTopViewController completion:setViewControllersCompletionBlock];
+		}
+	} else {
+		newTopViewController.view.frame = self.view.bounds;
+		[self.view addSubview:newTopViewController.view];
+		[topViewController.view removeFromSuperview];
+		
+		setViewControllersCompletionBlock();
+	}
+}
+
 #pragma mark - Navigation
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)())completion {
-	// Remove previous top view controller as current
 	UIViewController *backgroundViewController = self.topViewController;
-	[backgroundViewController willMoveToParentViewController:nil];
 	
 	// Add to view controllers array
 	[_viewControllers addObject:viewController];
 	
-	// Add as a child
-	[self addChildViewController:viewController];
-	
-	void (^cleanUpBackgroundViewController)() = ^(){
-		[backgroundViewController.view removeFromSuperview];
-		[backgroundViewController removeFromParentViewController];
-		[backgroundViewController didMoveToParentViewController:nil];
-	};
+	// Separate animation and lifecycle logic by creating pre and post view/animation logic blocks
+	[self handlePreAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
 	
 	if (animated) {
-		// Adjust frame to be out of view
-		CGRect foregroundFrame = viewController.view.frame;
-		foregroundFrame.size = self.view.bounds.size;
-		foregroundFrame.origin = CGPointMake(self.view.bounds.size.width, 0.0);
-		viewController.view.frame = foregroundFrame;
-		
-		CGRect backgroundFrame = backgroundViewController.view.frame;
-		backgroundFrame.origin.x = -40.0;
-		
-		// Add subview
-		[self.view addSubview:viewController.view];
-		[viewController didMoveToParentViewController:self];
-		
-		// Animate
-		foregroundFrame.origin = CGPointZero;
-		[UIView animateWithDuration:DURATION_PUSH delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-			viewController.view.frame = foregroundFrame;
-			backgroundViewController.view.frame = backgroundFrame;
-		} completion:^(BOOL finished) {
-			cleanUpBackgroundViewController();
-			
-			if (completion) {
-				completion();
-			}
+		[self animatedPushingTransitionFromViewController:backgroundViewController toViewController:viewController completion:^(){
+			[self handlePostAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
 		}];
 	} else {
-		// Adjust frame to be 0
 		viewController.view.frame = self.view.bounds;
-		
-		// Add subview
 		[self.view addSubview:viewController.view];
-		[viewController didMoveToParentViewController:self];
 		
-		cleanUpBackgroundViewController();
+		[backgroundViewController.view removeFromSuperview];
+		
+		[self handlePostAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
 	}
 }
 
@@ -125,45 +134,25 @@
 	}
 	[viewControllersCopy release];
 	
-	// Remove from parent
-	[foregroundViewController willMoveToParentViewController:nil];
+	// Separate animation and lifecycle logic by creating pre and post view/animation logic blocks	
+	[self handlePreAnimationLifecycleTransitioningFromViewController:foregroundViewController toViewController:viewController];
 	
-	void (^cleanUpForegroundViewController)() = ^() {
-		[foregroundViewController.view removeFromSuperview];
-		[foregroundViewController removeFromParentViewController];
-		[foregroundViewController didMoveToParentViewController:nil];
-		
-		[self addChildViewController:viewController];
-		[viewController didMoveToParentViewController:self];
-		
+	void (^postAnimationLifecycleHandlerBlock)() = ^(){		
+		[self handlePostAnimationLifecycleTransitioningFromViewController:foregroundViewController toViewController:viewController];
 		[foregroundViewController release];
-		
-		if (completion) {
-			completion();
-		}
 	};
-	
-	// Add the background view controller's view back
-	[self.view insertSubview:viewController.view belowSubview:foregroundViewController.view];
-	
+
 	if (animated) {
-		CGRect foregroundFrame = foregroundViewController.view.frame;
-		foregroundFrame.origin.x = self.view.bounds.size.width;
-		
-		CGRect backgroundFrame = viewController.view.frame;
-		backgroundFrame.origin.x = -40.0;
-		viewController.view.frame = backgroundFrame;
-		backgroundFrame.origin.x = 0.0;
-		
-		[UIView animateWithDuration:DURATION_POP delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-			foregroundViewController.view.frame = foregroundFrame;
-			viewController.view.frame = backgroundFrame;
-		} completion:^(BOOL finished) {
-			cleanUpForegroundViewController();
-		}];
+		[self animatePoppingTransitionFromViewController:foregroundViewController toViewController:viewController completion:postAnimationLifecycleHandlerBlock];
 	} else {
-		cleanUpForegroundViewController();
+		viewController.view.frame = self.view.bounds;
+		[self.view addSubview:viewController.view];
+		
+		[foregroundViewController.view removeFromSuperview];
+		
+		postAnimationLifecycleHandlerBlock();
 	}
+	
 }
 
 - (void)popViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
@@ -178,6 +167,75 @@
 	if ([_viewControllers count] > 1) {
 		[self popToViewController:[_viewControllers objectAtIndex:0] animated:animated completion:completion];
 	}
+}
+
+#pragma mark - Pre and Post Animation Lifecycle Methods
+
+- (void)handlePreAnimationLifecycleTransitioningFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController {
+	[fromViewController willMoveToParentViewController:nil];
+	[self addChildViewController:toViewController];
+}
+
+- (void)handlePostAnimationLifecycleTransitioningFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController {
+	[toViewController didMoveToParentViewController:self];
+	[fromViewController removeFromParentViewController];
+	[fromViewController didMoveToParentViewController:nil];
+}
+
+#pragma mark - Transitioning
+
+- (void)animatedPushingTransitionFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController completion:(void (^)())completion {
+	// Adjust frame of toViewController by setting it off screen to the right
+	CGRect toViewControllerFrame = toViewController.view.frame;
+	toViewControllerFrame.origin.x = self.view.bounds.size.width;
+	toViewController.view.frame = toViewControllerFrame;
+	toViewControllerFrame.origin.x = 0.0;
+	
+	// Add toViewController's view as a subview
+	[self.view addSubview:toViewController.view];
+	
+	// Set up fromViewController's view to end up slightly off screen to the left after the animation
+	CGRect fromViewControllerFrame = fromViewController.view.frame;
+	fromViewControllerFrame.origin.x = -40.0;
+	
+	// Animate toViewController's view to slide in from the right and fromViewController's view to shift over to the left slightly off screen
+	[UIView animateWithDuration:DURATION_PUSH delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+		toViewController.view.frame = toViewControllerFrame;
+		fromViewController.view.frame = fromViewControllerFrame;
+	} completion:^(BOOL finished) {
+		[fromViewController.view removeFromSuperview];
+		
+		if (completion) {
+			completion();
+		}
+	}];
+}
+
+- (void)animatePoppingTransitionFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController completion:(void (^)())completion {
+	// Adjust the frame of toViewController to be very slightly off screen and to end up at 0.0 after animation
+	CGRect toViewControllerFrame = toViewController.view.frame;
+	toViewControllerFrame.origin.x = -40.0;
+	toViewController.view.frame = toViewControllerFrame;
+	toViewControllerFrame.origin.x = 0.0;
+	
+	// Add the view of the toViewController behind the fromViewController
+	[self.view insertSubview:toViewController.view belowSubview:fromViewController.view];
+	
+	// Adjust frame of fromViewController that will be animated
+	CGRect fromViewControllerFrame = fromViewController.view.frame;
+	fromViewControllerFrame.origin.x = self.view.bounds.size.width;
+	
+	// Animate frame of fromViewController to slide off screen
+	[UIView animateWithDuration:DURATION_POP delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+		fromViewController.view.frame = fromViewControllerFrame;
+		toViewController.view.frame = toViewControllerFrame;
+	} completion:^(BOOL finished) {
+		[fromViewController.view removeFromSuperview];
+		
+		if (completion) {
+			completion();
+		}
+	}];
 }
 
 @end

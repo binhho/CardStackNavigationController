@@ -13,7 +13,7 @@
 	NSMutableArray *_viewControllers;
 }
 
-@property (nonatomic, readonly) NSArray *viewControllers;
+@property (nonatomic, retain) NSArray *viewControllers;
 @property (nonatomic, readonly) UIViewController *topViewController;
 
 - (id)initWithRootViewController:(UIViewController *)viewController;
@@ -21,6 +21,7 @@
 - (void)popViewControllerAnimated:(BOOL)animated completion:(void (^)())completion;
 - (void)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)())completion;
 - (void)popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)())completion;
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated completion:(void (^)())completion;
 
 @end
 
