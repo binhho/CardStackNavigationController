@@ -11,23 +11,27 @@
 #define DURATION_PUSH 0.4
 #define DURATION_POP 0.3
 
+typedef enum {
+	CardStackNavigationTransitionTypePush,
+	CardStackNavigationTransitionTypePop,
+} CardStackNavigationTransitionType;
+
 @interface CardStackNavigationController ()
 
 @end
 
 @implementation CardStackNavigationController
 @dynamic topViewController;
+@dynamic rootViewController;
 
 - (void)dealloc {
-	[_rootViewController release];
 	[_viewControllers release];
 	[super dealloc];
 }
 
 - (id)initWithRootViewController:(UIViewController *)viewController {
 	if ((self = [super init])) {
-		_rootViewController = [viewController retain];
-		_viewControllers = [[NSMutableArray alloc] init];
+		_viewControllers = [[NSMutableArray alloc] initWithObjects:viewController, nil];
 	}
 	return self;
 }
@@ -37,16 +41,25 @@
 	
 	self.view.clipsToBounds = YES;
 	
-	if (_rootViewController) {
-		[self pushViewController:_rootViewController animated:NO completion:nil];
+	if ([_viewControllers count]) {
+		[self transition:CardStackNavigationTransitionTypePush fromViewController:nil toViewController:[_viewControllers lastObject] animated:NO completion:nil];
 	}
 }
 
-#pragma mark - Getters/Setters
+#pragma mark - Dynamic Getters
 
 - (UIViewController *)topViewController {
 	return [_viewControllers lastObject];
 }
+
+- (UIViewController *)rootViewController {
+	if ([_viewControllers count]) {
+		return [_viewControllers objectAtIndex:0];
+	}
+	return nil;
+}
+
+#pragma mark - Set View Controllers
 
 - (void)setViewControllers:(NSArray *)viewControllers {
 	[self setViewControllers:viewControllers animated:NO completion:nil];
@@ -56,9 +69,8 @@
 	UIViewController *topViewController = [self.topViewController retain];
 	UIViewController *newTopViewController = [viewControllers lastObject];
 	
-	void (^setViewControllersCompletionBlock)() = ^(){
-		[self handlePostAnimationLifecycleTransitioningFromViewController:topViewController toViewController:newTopViewController];
-		
+	CardStackNavigationTransitionType transitionType = ([_viewControllers indexOfObject:newTopViewController] != NSNotFound ? CardStackNavigationTransitionTypePop : CardStackNavigationTransitionTypePush);
+	[self transition:transitionType fromViewController:topViewController toViewController:newTopViewController animated:animated completion:^(){
 		[_viewControllers release];
 		_viewControllers = [[NSMutableArray alloc] initWithArray:viewControllers];
 		
@@ -67,29 +79,10 @@
 		if (completion) {
 			completion();
 		}
-	};
-	
-	[self handlePreAnimationLifecycleTransitioningFromViewController:topViewController toViewController:newTopViewController];
-	
-	if (animated) {
-		// If the new top view controller is in the current array, then transition as if we're popping
-		if ([_viewControllers indexOfObject:newTopViewController] != NSNotFound) {
-			// "Popping" from topViewController to newTopViewController
-			[self animatePoppingTransitionFromViewController:topViewController toViewController:newTopViewController completion:setViewControllersCompletionBlock];
-		} else {
-			// If the new top view controler is NOT in the current array, then transition as if we're pushing
-			[self animatedPushingTransitionFromViewController:topViewController toViewController:newTopViewController completion:setViewControllersCompletionBlock];
-		}
-	} else {
-		newTopViewController.view.frame = self.view.bounds;
-		[self.view addSubview:newTopViewController.view];
-		[topViewController.view removeFromSuperview];
-		
-		setViewControllersCompletionBlock();
-	}
+	}];
 }
 
-#pragma mark - Navigation
+#pragma mark - Public Navigation Methods
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)())completion {
 	UIViewController *backgroundViewController = self.topViewController;
@@ -97,21 +90,8 @@
 	// Add to view controllers array
 	[_viewControllers addObject:viewController];
 	
-	// Separate animation and lifecycle logic by creating pre and post view/animation logic blocks
-	[self handlePreAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
-	
-	if (animated) {
-		[self animatedPushingTransitionFromViewController:backgroundViewController toViewController:viewController completion:^(){
-			[self handlePostAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
-		}];
-	} else {
-		viewController.view.frame = self.view.bounds;
-		[self.view addSubview:viewController.view];
-		
-		[backgroundViewController.view removeFromSuperview];
-		
-		[self handlePostAnimationLifecycleTransitioningFromViewController:backgroundViewController toViewController:viewController];
-	}
+	// Transition
+	[self transition:CardStackNavigationTransitionTypePush fromViewController:backgroundViewController toViewController:viewController animated:animated completion:completion];
 }
 
 - (void)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)())completion {
@@ -134,25 +114,14 @@
 	}
 	[viewControllersCopy release];
 	
-	// Separate animation and lifecycle logic by creating pre and post view/animation logic blocks	
-	[self handlePreAnimationLifecycleTransitioningFromViewController:foregroundViewController toViewController:viewController];
-	
-	void (^postAnimationLifecycleHandlerBlock)() = ^(){		
-		[self handlePostAnimationLifecycleTransitioningFromViewController:foregroundViewController toViewController:viewController];
+	// Transition
+	[self transition:CardStackNavigationTransitionTypePop fromViewController:foregroundViewController toViewController:viewController animated:animated completion:^(){
 		[foregroundViewController release];
-	};
-
-	if (animated) {
-		[self animatePoppingTransitionFromViewController:foregroundViewController toViewController:viewController completion:postAnimationLifecycleHandlerBlock];
-	} else {
-		viewController.view.frame = self.view.bounds;
-		[self.view addSubview:viewController.view];
 		
-		[foregroundViewController.view removeFromSuperview];
-		
-		postAnimationLifecycleHandlerBlock();
-	}
-	
+		if (completion) {
+			completion();
+		}
+	}];
 }
 
 - (void)popViewControllerAnimated:(BOOL)animated completion:(void (^)())completion {
@@ -169,6 +138,19 @@
 	}
 }
 
+#pragma mark - Transitioning (Handling all lifecycle and animation logic)
+
+- (void)transition:(CardStackNavigationTransitionType)transitionType fromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL) animated completion:(void (^)())completion {
+	[self handlePreAnimationLifecycleTransitioningFromViewController:fromViewController toViewController:toViewController];
+	[self handleViewTransitionType:transitionType fromViewController:fromViewController toViewController:toViewController animated:animated completion:^(){
+		[self handlePostAnimationLifecycleTransitioningFromViewController:fromViewController toViewController:toViewController];
+		
+		if (completion) {
+			completion();
+		}
+	}];
+}
+
 #pragma mark - Pre and Post Animation Lifecycle Methods
 
 - (void)handlePreAnimationLifecycleTransitioningFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController {
@@ -182,60 +164,70 @@
 	[fromViewController didMoveToParentViewController:nil];
 }
 
-#pragma mark - Transitioning
+#pragma mark - View/Animation Handling During Transition
 
-- (void)animatedPushingTransitionFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController completion:(void (^)())completion {
-	// Adjust frame of toViewController by setting it off screen to the right
-	CGRect toViewControllerFrame = toViewController.view.frame;
-	toViewControllerFrame.origin.x = self.view.bounds.size.width;
-	toViewController.view.frame = toViewControllerFrame;
-	toViewControllerFrame.origin.x = 0.0;
-	
-	// Add toViewController's view as a subview
-	[self.view addSubview:toViewController.view];
-	
-	// Set up fromViewController's view to end up slightly off screen to the left after the animation
-	CGRect fromViewControllerFrame = fromViewController.view.frame;
-	fromViewControllerFrame.origin.x = -40.0;
-	
-	// Animate toViewController's view to slide in from the right and fromViewController's view to shift over to the left slightly off screen
-	[UIView animateWithDuration:DURATION_PUSH delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-		toViewController.view.frame = toViewControllerFrame;
-		fromViewController.view.frame = fromViewControllerFrame;
-	} completion:^(BOOL finished) {
+- (void)handleViewTransitionType:(CardStackNavigationTransitionType)transitionType fromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated completion:(void (^)())completion {
+	void (^transitionCompletionBlock)() = ^(){
 		[fromViewController.view removeFromSuperview];
 		
 		if (completion) {
 			completion();
 		}
-	}];
-}
-
-- (void)animatePoppingTransitionFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController completion:(void (^)())completion {
-	// Adjust the frame of toViewController to be very slightly off screen and to end up at 0.0 after animation
-	CGRect toViewControllerFrame = toViewController.view.frame;
-	toViewControllerFrame.origin.x = -40.0;
-	toViewController.view.frame = toViewControllerFrame;
-	toViewControllerFrame.origin.x = 0.0;
+	};
 	
-	// Add the view of the toViewController behind the fromViewController
-	[self.view insertSubview:toViewController.view belowSubview:fromViewController.view];
-	
-	// Adjust frame of fromViewController that will be animated
-	CGRect fromViewControllerFrame = fromViewController.view.frame;
-	fromViewControllerFrame.origin.x = self.view.bounds.size.width;
-	
-	// Animate frame of fromViewController to slide off screen
-	[UIView animateWithDuration:DURATION_POP delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-		fromViewController.view.frame = fromViewControllerFrame;
-		toViewController.view.frame = toViewControllerFrame;
-	} completion:^(BOOL finished) {
-		[fromViewController.view removeFromSuperview];
+	if (animated) {
+		CGRect toViewControllerFrame = toViewController.view.frame;
+		CGRect fromViewControllerFrame = fromViewController.view.frame;
+		NSTimeInterval animationDuration = 0.0;
+		UIViewAnimationOptions animationOptions = 0;
 		
-		if (completion) {
-			completion();
+		if (transitionType == CardStackNavigationTransitionTypePush) {
+			// Adjust frame of toViewController by setting it off screen to the right
+			toViewControllerFrame.origin.x = self.view.bounds.size.width;
+			toViewController.view.frame = toViewControllerFrame;
+			
+			// Add toViewController's view on screen
+			[self.view addSubview:toViewController.view];
+			
+			// Set up fromViewController's view to end up slightly off screen to the left after the animation
+			fromViewControllerFrame.origin.x = -40.0;
+			
+			// Set animation options
+			animationDuration = DURATION_PUSH;
+			animationOptions = UIViewAnimationOptionCurveEaseInOut;
+			
+		} else if (transitionType == CardStackNavigationTransitionTypePop) {
+			// Adjust the frame of toViewController to be slightly off screen to the left
+			toViewControllerFrame.origin.x = -40.0;
+			toViewController.view.frame = toViewControllerFrame;
+			
+			// Add the view of the toViewController behind the fromViewController's view so it is revealed duration the animation
+			[self.view insertSubview:toViewController.view belowSubview:fromViewController.view];
+			
+			// Adjust frame of fromViewController's view so it ends up off screen to the right
+			fromViewControllerFrame.origin.x = self.view.bounds.size.width;
+			
+			// Set animation options
+			animationDuration = DURATION_POP;
+			animationOptions = UIViewAnimationOptionCurveEaseOut;
 		}
-	}];
+		
+		// Animate the soon-to-be top view controller to be at 0
+		toViewControllerFrame.origin.x = 0.0;
+		
+		[UIView animateWithDuration:animationDuration delay:0.0 options:animationOptions animations:^{
+			fromViewController.view.frame = fromViewControllerFrame;
+			toViewController.view.frame = toViewControllerFrame;
+		} completion:^(BOOL finished) {
+			transitionCompletionBlock();
+		}];
+		
+	} else {
+		toViewController.view.frame = self.view.bounds;
+		[self.view addSubview:toViewController.view];
+		
+		transitionCompletionBlock();
+	}
 }
 
 @end

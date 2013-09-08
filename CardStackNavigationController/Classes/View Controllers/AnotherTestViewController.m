@@ -24,30 +24,9 @@
     return self;
 }
 
-//- (void)viewDidLoad {
-//    [super viewDidLoad];
-//	NSLog(@"%@ view did load", self);
-//}
-//
-//- (void)viewWillAppear:(BOOL)animated {
-//	[super viewWillAppear:animated];
-//	NSLog(@"%@ view will appear", self);
-//}
-//
-//- (void)viewDidAppear:(BOOL)animated {
-//	[super viewDidAppear:animated];
-//	NSLog(@"%@ view did appear", self);
-//}
-//
-//- (void)viewWillDisappear:(BOOL)animated {
-//	[super viewWillDisappear:animated];
-//	NSLog(@"%@ view will disappear", self);
-//}
-//
-//- (void)viewDidDisappear:(BOOL)animated {
-//	[super viewDidDisappear:animated];
-//	NSLog(@"%@ view did disappear", self);
-//}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
 
 - (IBAction)push:(id)sender {
 	TestViewController *testViewController = [[TestViewController alloc] init];

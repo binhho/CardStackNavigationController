@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "CardStackNavigationController.h"
 #import "TestViewController.h"
+#import "AnotherTestViewController.h"
 
 @implementation AppDelegate
 
@@ -25,10 +26,17 @@
     self.window.backgroundColor = [UIColor whiteColor];
 	
 	TestViewController *testViewController = [[TestViewController alloc] init];
-	CardStackNavigationController *navCon = [[CardStackNavigationController alloc] initWithRootViewController:testViewController];
+	AnotherTestViewController *anotherTestViewController = [[AnotherTestViewController alloc] init];
+	AnotherTestViewController *anotherTestViewController2 = [[AnotherTestViewController alloc] init];
+	
+	CardStackNavigationController *navCon = [[CardStackNavigationController alloc] init];
+	navCon.viewControllers = @[testViewController, anotherTestViewController, anotherTestViewController2];
 	self.window.rootViewController = navCon;
 	[navCon release];
+	
 	[testViewController release];
+	[anotherTestViewController release];
+	[anotherTestViewController2 release];
 	
     [self.window makeKeyAndVisible];
     return YES;
