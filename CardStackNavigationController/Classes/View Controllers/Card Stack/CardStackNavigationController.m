@@ -22,6 +22,7 @@ typedef enum {
 
 @implementation CardStackNavigationController
 @dynamic topViewController;
+@dynamic backViewController;
 @dynamic rootViewController;
 
 - (void)dealloc {
@@ -50,6 +51,14 @@ typedef enum {
 
 - (UIViewController *)topViewController {
 	return [_viewControllers lastObject];
+}
+
+- (UIViewController *)backViewController {
+	NSInteger count = [_viewControllers count];
+	if (count >= 2) {
+		return [_viewControllers objectAtIndex:count - 2];
+	}
+	return nil;
 }
 
 - (UIViewController *)rootViewController {

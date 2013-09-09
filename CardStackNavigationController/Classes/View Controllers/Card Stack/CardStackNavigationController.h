@@ -12,8 +12,9 @@
 	NSMutableArray *_viewControllers;
 }
 
-@property (nonatomic, retain) NSArray *viewControllers;
+@property (nonatomic, copy) NSArray *viewControllers;
 @property (nonatomic, readonly) UIViewController *topViewController;
+@property (nonatomic, readonly) UIViewController *backViewController; // Returns the second last view controller
 @property (nonatomic, readonly) UIViewController *rootViewController;
 
 - (id)initWithRootViewController:(UIViewController *)viewController;
