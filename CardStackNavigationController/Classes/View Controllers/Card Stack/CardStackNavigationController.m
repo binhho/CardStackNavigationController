@@ -26,6 +26,7 @@ typedef enum {
 @dynamic rootViewController;
 
 - (void)dealloc {
+	[_darkFadeView release];
 	[_viewControllers release];
 	[super dealloc];
 }
@@ -179,16 +180,28 @@ typedef enum {
 	void (^transitionCompletionBlock)() = ^(){
 		[fromViewController.view removeFromSuperview];
 		
+		[_darkFadeView removeFromSuperview];
+		
 		if (completion) {
 			completion();
 		}
 	};
+	
+	UIViewController *bottomViewController = (transitionType == CardStackNavigationTransitionTypePush ? fromViewController : toViewController);
 	
 	if (animated) {
 		CGRect toViewControllerFrame = toViewController.view.frame;
 		CGRect fromViewControllerFrame = fromViewController.view.frame;
 		NSTimeInterval animationDuration = 0.0;
 		UIViewAnimationOptions animationOptions = 0;
+		
+		if (_darkFadeView == nil) {
+			_darkFadeView = [[UIView alloc] init];
+			_darkFadeView.backgroundColor = [UIColor colorWithWhite:0.2 alpha:0.3];
+		}
+		_darkFadeView.frame = bottomViewController.view.bounds;
+		[bottomViewController.view addSubview:_darkFadeView];
+		CGFloat darkFadeViewAlpha = 0.0;
 		
 		if (transitionType == CardStackNavigationTransitionTypePush) {
 			// Adjust frame of toViewController by setting it off screen to the right
@@ -205,6 +218,9 @@ typedef enum {
 			animationDuration = DURATION_PUSH;
 			animationOptions = UIViewAnimationOptionCurveEaseInOut;
 			
+			_darkFadeView.alpha = 0.0;
+			darkFadeViewAlpha = 1.0;
+			
 		} else if (transitionType == CardStackNavigationTransitionTypePop) {
 			// Adjust the frame of toViewController to be slightly off screen to the left
 			toViewControllerFrame.origin.x = -40.0;
@@ -219,6 +235,9 @@ typedef enum {
 			// Set animation options
 			animationDuration = DURATION_POP;
 			animationOptions = UIViewAnimationOptionCurveEaseOut;
+			
+			_darkFadeView.alpha = 1.0;
+			darkFadeViewAlpha = 0.0;
 		}
 		
 		// Animate the soon-to-be top view controller to be at 0
@@ -227,6 +246,7 @@ typedef enum {
 		[UIView animateWithDuration:animationDuration delay:0.0 options:animationOptions animations:^{
 			fromViewController.view.frame = fromViewControllerFrame;
 			toViewController.view.frame = toViewControllerFrame;
+			_darkFadeView.alpha = darkFadeViewAlpha;
 		} completion:^(BOOL finished) {
 			transitionCompletionBlock();
 		}];
@@ -237,6 +257,16 @@ typedef enum {
 		
 		transitionCompletionBlock();
 	}
+}
+
+#pragma mark - Rotation
+
+- (BOOL)shouldAutorotate {
+	return [self.topViewController shouldAutorotate];
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+	return [self.topViewController supportedInterfaceOrientations];
 }
 
 @end

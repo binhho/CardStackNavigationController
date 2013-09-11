@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CardStackNavigationController : UIViewController {
+	UIView *_darkFadeView;
 	NSMutableArray *_viewControllers;
 }
 
